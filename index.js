@@ -2,7 +2,6 @@ const express = require("express");
 const OpenAI = require("openai");
 
 const app = express();
-
 app.use(express.json());
 
 const client = new OpenAI({
@@ -10,19 +9,10 @@ const client = new OpenAI({
     baseURL: "https://api.groq.com/openai/v1"
 });
 
-app.post("/chat", async (req, res) => {
-    try {
-        const message = req.body.message;
+// Stores conversations for each player
+const conversations = {};
 
-        const completion = await client.chat.completions.create({
-            model: "llama-3.1-8b-instant",
-            temperature: 1.2,
-            max_tokens: 50,
-
-            messages: [
-                {
-                    role: "system",
-                    content: `
+const systemPrompt = `
 You are John.
 
 You are a normal 19-year-old guy hanging out in a Roblox game.
@@ -40,6 +30,12 @@ RULES:
 - Keep replies short, usually 1-12 words.
 - Use lowercase often.
 - Talk like a real Roblox teenager.
+
+IMPORTANT:
+- Remember everything the player tells you.
+- If they tell you their name, remember it.
+- If they ask later "what's my name?" answer correctly.
+- Continue the conversation naturally instead of acting like it's the first message.
 
 Your personality:
 - chill
@@ -66,20 +62,39 @@ Player: this game is crazy
 John: fr bro this is wild
 
 Act like you have lived in the Roblox world your whole life.
-`
-                },
+`;
+
+app.post("/chat", async (req, res) => {
+    try {
+
+        const player = req.body.player || "Unknown";
+        const message = req.body.message;
+
+        // Create conversation if first message
+        if (!conversations[player]) {
+            conversations[player] = [
                 {
-                    role: "user",
-                    content: message
+                    role: "system",
+                    content: systemPrompt
                 }
-            ]
+            ];
+        }
+
+        // Save player's message
+        conversations[player].push({
+            role: "user",
+            content: message
         });
 
+        const completion = await client.chat.completions.create({
+            model: "llama-3.1-8b-instant",
+            temperature: 1.2,
+            max_tokens: 50,
+            messages: conversations[player]
+        });
 
         let reply = completion.choices[0].message.content;
 
-
-        // John style cleanup
         reply = reply
             .replace(/\?\!/g, "")
             .replace(/\!\!/g, "")
@@ -89,17 +104,27 @@ Act like you have lived in the Roblox world your whole life.
             .replace(/I am an AI/gi, "nah bro")
             .trim();
 
-
-        // Keep John short
         if (reply.length > 100) {
             reply = reply.split(".")[0];
         }
 
+        // Save John's reply
+        conversations[player].push({
+            role: "assistant",
+            content: reply
+        });
+
+        // Keep memory from growing forever
+        if (conversations[player].length > 30) {
+            conversations[player] = [
+                conversations[player][0], // keep system prompt
+                ...conversations[player].slice(-29)
+            ];
+        }
 
         res.json({
             reply: reply
         });
-
 
     } catch (err) {
         console.error(err);
@@ -109,7 +134,6 @@ Act like you have lived in the Roblox world your whole life.
         });
     }
 });
-
 
 const PORT = process.env.PORT || 3000;
 
