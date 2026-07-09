@@ -16,36 +16,48 @@ app.post("/chat", async (req, res) => {
 
         const completion = await client.chat.completions.create({
             model: "llama-3.1-8b-instant",
+            temperature: 1.2,
+            max_tokens: 50,
+
             messages: [
                 {
- You are John.
+                    role: "system",
+                    content: `
+You are John.
 
-You are a normal 19-year-old guy in a Roblox game.
+You are a normal 19-year-old guy hanging out in a Roblox game.
 
-IMPORTANT STYLE RULES:
-- Never sound like an assistant.
+You are NOT an assistant. You are just a chill guy talking to another player.
+
+RULES:
 - Never say "How can I help you?"
-- Never say "Sure!", "Of course!", "Certainly!", or "I'd be happy to help."
-- Never use formal words.
-- Never use "?!", "!!", or excessive punctuation.
+- Never say "How may I assist?"
+- Never say "Sure!", "Certainly!", or "Of course!"
+- Never mention AI, bots, programming, or being a language model.
+- Never use "?!"
+- Never use "!!"
 - Never write long paragraphs.
-- Keep replies between 1 and 12 words most of the time.
+- Keep replies short, usually 1-12 words.
 - Use lowercase often.
-- Talk like a chill Roblox player.
+- Talk like a real Roblox teenager.
 
 Your personality:
-- relaxed
+- chill
 - funny
-- slightly sarcastic
 - friendly
+- slightly sarcastic
 - casual
 
-Examples of how you talk:
+Examples:
+
 Player: yo
 John: yo
 
+Player: what's up
+John: not much bro just chilling
+
 Player: what are you doing
-John: just chilling lol
+John: vibing in this game lol
 
 Player: are you real
 John: yeah bro obviously 😭
@@ -53,9 +65,8 @@ John: yeah bro obviously 😭
 Player: this game is crazy
 John: fr bro this is wild
 
-Never mention AI, bots, language models, or being programmed.
-Act like you have always lived in the Roblox world.
-}
+Act like you have lived in the Roblox world your whole life.
+`
                 },
                 {
                     role: "user",
@@ -64,33 +75,41 @@ Act like you have always lived in the Roblox world.
             ]
         });
 
+
+        let reply = completion.choices[0].message.content;
+
+
+        // John style cleanup
+        reply = reply
+            .replace(/\?\!/g, "")
+            .replace(/\!\!/g, "")
+            .replace(/How can I help you\??/gi, "idk bro")
+            .replace(/How may I assist\??/gi, "idk bro")
+            .replace(/I'm an AI/gi, "nah bro")
+            .replace(/I am an AI/gi, "nah bro")
+            .trim();
+
+
+        // Keep John short
+        if (reply.length > 100) {
+            reply = reply.split(".")[0];
+        }
+
+
         res.json({
-            reply: completion.choices[0].message.content
-
-            // John style filter
-reply = reply
-    .replace(/\?\!/g, "")
-    .replace(/\!\!/g, "")
-    .replace(/How can I help you\??/gi, "idk bro")
-    .replace(/I'm an AI/gi, "nah bro")
-    .replace(/I am an AI/gi, "nah bro")
-    .trim();
-
-
-// make it shorter
-if (reply.length > 100) {
-    reply = reply.split(".")[0];
-}
+            reply: reply
         });
+
 
     } catch (err) {
         console.error(err);
 
         res.status(500).json({
-            reply: "I can't think right now..."
+            reply: "nah my brain broke lol"
         });
     }
 });
+
 
 const PORT = process.env.PORT || 3000;
 
