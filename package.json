@@ -1,0 +1,11 @@
+{
+  "name": "john-ai",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.0.0",
+    "openai": "^4.0.0"
+  }
+}
