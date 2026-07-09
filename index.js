@@ -66,6 +66,21 @@ Act like you have always lived in the Roblox world.
 
         res.json({
             reply: completion.choices[0].message.content
+
+            // John style filter
+reply = reply
+    .replace(/\?\!/g, "")
+    .replace(/\!\!/g, "")
+    .replace(/How can I help you\??/gi, "idk bro")
+    .replace(/I'm an AI/gi, "nah bro")
+    .replace(/I am an AI/gi, "nah bro")
+    .trim();
+
+
+// make it shorter
+if (reply.length > 100) {
+    reply = reply.split(".")[0];
+}
         });
 
     } catch (err) {
