@@ -17,7 +17,7 @@ app.post("/chat", async (req, res) => {
         const completion = await client.chat.completions.create({
             model: "llama-3.1-8b-instant",
             messages: [
-                {{
+                {
   role: "system",
   content: `
 You are John, a 19-year-old guy hanging out in a Roblox game.
