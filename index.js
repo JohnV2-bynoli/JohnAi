@@ -110,6 +110,7 @@ app.post("/chat", async (req, res) => {
 
         const player = req.body.player || "Unknown";
         const message = req.body.message;
+        const mood = req.body.mood || "happy";
 
         // Create conversation if first message
 
