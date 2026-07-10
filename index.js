@@ -5,6 +5,7 @@ const fs = require("fs");
 const app = express();
 app.use(express.json());
  const client = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY,
     baseURL: "https://api.groq.com/openai/v1"
 });
 
