@@ -306,7 +306,7 @@ if (ai.remember) {
         reply = reply
             .replace(/\?\!/g, "")
             .replace(/\!\!/g, "")
- app.post("/chat", async (req, res) => {
+
             .replace(/I am an AI/gi, "nah bro")
             .trim();
 
