@@ -285,7 +285,7 @@ try {
     };
 }
 
-let reply = ai.reply || "..."
+let reply = ai.reply || "...";
         console.log("AI RESPONSE:", ai);
 
 if (ai.remember) {
