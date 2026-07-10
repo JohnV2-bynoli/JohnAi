@@ -147,12 +147,9 @@ If there is nothing important to remember, return:
 }
 
 
-}
-
 Act like you have lived in the Roblox world your whole life.
 `;
 
-const actionPrompt = `
 const actionPrompt = `
 You are John.
 
@@ -303,19 +300,6 @@ if (ai.remember) {
 
 
         // Detect "my name is..."
-        const nameMatch = message.match(
-            /my name is ([a-zA-Z]+)/i
-        );
-
-
-        if (nameMatch) {
-
-            memories[player] = nameMatch[1];
-
-            saveMemory();
-
-        }
-
 
 
         reply = reply
@@ -365,7 +349,6 @@ if (ai.remember) {
 
     } catch (err) {
 
-    } catch(err) {
 
         console.error(err);
 
