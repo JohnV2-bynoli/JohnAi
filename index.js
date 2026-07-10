@@ -344,9 +344,10 @@ if (ai.remember) {
 
 
 
-        res.json({
-            reply: reply
-        });
+  res.json({
+    reply: reply,
+    remember: ai.remember || null
+});
 
     } catch (err) {
 
