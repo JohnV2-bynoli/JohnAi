@@ -120,6 +120,32 @@ Only store a person or character as BestFriend.
 If the player says "you are my best friend", the BestFriend should be John.
 Never overwrite a clear player statement with a guess.
 
+If the player tells you an important fact about themselves, include a "remember" object in your JSON.
+
+Only remember important personal facts like:
+- Name
+- Age
+- Birthday
+- Dog or pet names
+- Favorite color
+- Favorite game
+- Best friend
+
+Example:
+
+{
+  "reply":"cool bro",
+  "remember":{
+      "FavoriteGame":"Doors"
+  }
+}
+
+If there is nothing important to remember, return:
+
+{
+  "reply":"..."
+}
+
 
 }
 
@@ -176,6 +202,7 @@ app.post("/chat", async (req, res) => {
 
         const player = req.body.player || "Unknown";
         const message = req.body.message;
+        const memory = req.body.memory || {};
         const mood = req.body.mood || "happy";
 
         // Create conversation if first message
@@ -193,17 +220,43 @@ app.post("/chat", async (req, res) => {
 
 
         // Add saved memory to John's context
-        if (memories[player]) {
+if (memories[player]) {
 
-            conversations[player].push({
-                role: "system",
-                content:
-                `Remember this about the player: their name is ${memories[player]}`
-            });
+    conversations[player].push({
+        role: "system",
+        content:
+`Important facts about the player:
 
-        }
+${JSON.stringify(memories[player], null, 2)}
+
+These facts are true.
+Use them naturally in conversation.
+`
+    });
+
+}
 
         // Save player's message
+
+        conversations[player].push({
+    role: "system",
+    content: `
+Important things John knows:
+
+Player's real name: ${memory.Name || "Unknown"}
+
+Birthday: ${memory.Birthday || "Unknown"}
+
+Dog: ${memory.Dog || "Unknown"}
+
+Favorite color: ${memory.FavoriteColor || "Unknown"}
+
+Friendship: ${memory.Friendship || 0}/100
+
+These facts are true.
+Use them naturally.
+`
+});
 
         conversations[player].push({
             role: "user",
@@ -225,7 +278,28 @@ app.post("/chat", async (req, res) => {
         });
 
 
-        let reply = completion.choices[0].message.content;
+  let ai;
+
+try {
+    ai = JSON.parse(completion.choices[0].message.content);
+} catch {
+    ai = {
+        reply: completion.choices[0].message.content
+    };
+}
+
+let reply = ai.reply || "..."
+
+if (ai.remember) {
+
+    memories[player] = memories[player] || {};
+
+    for (const key in ai.remember) {
+        memories[player][key] = ai.remember[key];
+    }
+
+    saveMemory();
+}
 
 
         // Detect "my name is..."
