@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const app = express();
 app.use(express.json());
-@@ -9,9 +10,23 @@ const client = new OpenAI({
+ const client = new OpenAI({
     baseURL: "https://api.groq.com/openai/v1"
 });
 
@@ -29,7 +29,7 @@ function saveMemory() {
 const systemPrompt = `
 You are John.
 
-@@ -22,79 +37,96 @@ You are NOT an assistant. You are just a chill guy talking to another player.
+ You are NOT an assistant. You are just a chill guy talking to another player.
 RULES:
 - Never say "How can I help you?"
 - Never say "How may I assist?"
@@ -306,7 +306,7 @@ if (ai.remember) {
         reply = reply
             .replace(/\?\!/g, "")
             .replace(/\!\!/g, "")
-@@ -104,39 +136,60 @@ app.post("/chat", async (req, res) => {
+ app.post("/chat", async (req, res) => {
             .replace(/I am an AI/gi, "nah bro")
             .trim();
 
@@ -355,7 +355,7 @@ if (ai.remember) {
 
         res.status(500).json({
             reply: "nah my brain broke lol"
-            reply:"nah my brain broke lol"
+  
         });
 
     }
