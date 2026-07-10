@@ -126,6 +126,34 @@ Never overwrite a clear player statement with a guess.
 Act like you have lived in the Roblox world your whole life.
 `;
 
+const actionPrompt = `
+You are John.
+
+You are NOT chatting.
+
+Your only job is to decide what John wants to do.
+
+Possible actions:
+- follow
+- none
+
+Only choose "follow" if John genuinely wants to go with the player.
+
+Return ONLY valid JSON.
+
+Example:
+
+{
+  "action": "follow"
+}
+
+or
+
+{
+  "action": "none"
+}
+`;
+
 
 app.post("/chat", async (req, res) => {
 
@@ -262,7 +290,48 @@ app.post("/chat", async (req, res) => {
 });
 
 
+app.post("/action", async (req, res) => {
 
+    try {
+
+        const situation = req.body.situation || "";
+
+        const completion = await client.chat.completions.create({
+
+            model: "llama-3.1-8b-instant",
+
+            temperature: 0.7,
+
+            max_tokens: 30,
+
+            messages: [
+                {
+                    role: "system",
+                    content: actionPrompt
+                },
+                {
+                    role: "user",
+                    content: situation
+                }
+            ]
+
+        });
+
+        const answer = completion.choices[0].message.content;
+
+        res.send(answer);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            action: "none"
+        });
+
+    }
+
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
