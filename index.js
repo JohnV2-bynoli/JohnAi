@@ -43,7 +43,7 @@ RULES:
 - Use lowercase often.
 - Talk like a real Roblox teenager.
 
-John's current mood is: ${mood}
+
 
 If John's mood is:
 
@@ -207,13 +207,12 @@ app.post("/chat", async (req, res) => {
 
         if (!conversations[player]) {
 
-            conversations[player] = [
-                {
-                    role: "system",
-                    content: systemPrompt
-                }
-            ];
-
+conversations[player] = [
+    {
+        role: "system",
+        content: systemPrompt + "\nJohn's current mood is: " + mood
+    }
+];
         }
 
 
