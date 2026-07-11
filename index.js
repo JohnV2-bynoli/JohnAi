@@ -320,6 +320,16 @@ Never act like you've just met the player if memories exist.
 `
 });
 
+     conversations[player].push({
+    role: "system",
+    content: `
+Only remember facts that are explicitly listed above.
+Do not invent memories.
+If you don't know something, say you don't know.
+Never claim the player said something unless it appears in memory or this conversation.
+`
+});
+
         conversations[player].push({
             role: "user",
             content: message
