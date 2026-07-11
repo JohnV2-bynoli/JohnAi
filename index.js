@@ -279,21 +279,7 @@ conversations[player] = [
 
 
         // Add saved memory to John's context
-if (memories[player]) {
 
-    conversations[player].push({
-        role: "system",
-        content:
-`Important facts about the player:
-
-${JSON.stringify(memories[player], null, 2)}
-
-These facts are true.
-Use them naturally in conversation.
-`
-    });
-
-}
 
         // Save player's message
 
@@ -369,16 +355,7 @@ try {
 let reply = ai.reply || "...";
         console.log("AI RESPONSE:", ai);
 
-if (ai.remember) {
 
-    memories[player] = memories[player] || {};
-
-    for (const key in ai.remember) {
-        memories[player][key] = ai.remember[key];
-    }
-
-    saveMemory();
-}
 
 
         // Detect "my name is..."
