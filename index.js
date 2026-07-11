@@ -109,6 +109,9 @@ Use memories naturally in replies.
 
 Never guess the player's name.
 Only use the stored player name if it exists in memory.
+The player's real name is always more important than their Roblox username.
+If the real name is known, always call them by their real name.
+Never switch back to their Roblox username unless the real name is unknown.
 If the name is unknown, say you don't know.
 Do not treat random words, usernames, jokes, or messages as the player's name unless the player clearly says "my name is ____".
 
@@ -201,6 +204,7 @@ app.post("/chat", async (req, res) => {
         const player = req.body.player || "Unknown";
         const message = req.body.message;
         const memory = req.body.memory || {};
+     const facts = memory.KnownFacts || {};
         const mood = req.body.mood || "happy";
 
         // Create conversation if first message
@@ -237,16 +241,20 @@ Use them naturally in conversation.
 
         conversations[player].push({
     role: "system",
-    content: `
+   content: `
 Important things John knows:
 
-Player's real name: ${memory.Name || "Unknown"}
+Player's real name: ${facts.Name || "Unknown"}
 
-Birthday: ${memory.Birthday || "Unknown"}
+Birthday: ${facts.Birthday || "Unknown"}
 
-Dog: ${memory.Dog || "Unknown"}
+Dog: ${facts.DogName || "Unknown"}
 
-Favorite color: ${memory.FavoriteColor || "Unknown"}
+Favorite color: ${facts.FavoriteColor || "Unknown"}
+
+Favorite game: ${facts.FavoriteGame || "Unknown"}
+
+Best friend: ${facts.BestFriend || "Unknown"}
 
 Friendship: ${memory.Friendship || 0}/100
 
