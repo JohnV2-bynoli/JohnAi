@@ -1,9 +1,12 @@
 const express = require("express");
 const OpenAI = require("openai");
 const fs = require("fs");
+const path = require("path");
 
 const app = express();
+
 app.use(express.json());
+app.use("/audio", express.static(path.join(__dirname, "audio")));
  const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
     baseURL: "https://api.groq.com/openai/v1"
