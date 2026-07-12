@@ -356,6 +356,46 @@ try {
 }
 
 let reply = ai.reply || "...";
+
+     try {
+
+    const voice = await fetch(
+        "https://api.elevenlabs.io/v1/text-to-speech/BntUeGOVvuA0RF1vP2LW",
+        {
+            method: "POST",
+            headers: {
+                "xi-api-key": process.env.ELEVENLABS_API_KEY,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: reply,
+                model_id: "eleven_multilingual_v2"
+            })
+        }
+    );
+
+    if (voice.ok) {
+
+        const buffer = Buffer.from(await voice.arrayBuffer());
+
+        const filename = `${Date.now()}.mp3`;
+
+        fs.writeFileSync(
+            path.join(__dirname, "audio", filename),
+            buffer
+        );
+
+        ai.audio = `/audio/${filename}`;
+
+        console.log("Voice saved:", filename);
+
+    }
+
+} catch (err) {
+
+    console.log("Voice error:", err);
+
+}
         console.log("AI RESPONSE:", ai);
 
 
@@ -405,9 +445,10 @@ let reply = ai.reply || "...";
 
 
 
-  res.json({
+res.json({
     reply: reply,
-    remember: ai.remember || null
+    remember: ai.remember || null,
+    audio: ai.audio || null
 });
 
     } catch (err) {
