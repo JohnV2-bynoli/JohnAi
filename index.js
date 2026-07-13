@@ -359,6 +359,8 @@ let reply = ai.reply || "...";
 
      try {
 
+      console.log("STARTING ELEVENLABS VOICE");
+
     const voice = await fetch(
         "https://api.elevenlabs.io/v1/text-to-speech/BntUeGOVvuA0RF1vP2LW",
         {
