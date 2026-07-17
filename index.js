@@ -376,6 +376,12 @@ let reply = ai.reply || "...";
         }
     );
 
+      console.log("ElevenLabs status:", voice.status);
+
+if (!voice.ok) {
+    console.log(await voice.text());
+}
+
     if (voice.ok) {
 
         const buffer = Buffer.from(await voice.arrayBuffer());
