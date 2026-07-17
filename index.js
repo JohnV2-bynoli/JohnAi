@@ -401,42 +401,42 @@ fs.writeFileSync(filePath, buffer);
 console.log("Saved to:", filePath);
 console.log("Exists:", fs.existsSync(filePath));
 
+const form = new FormData();
 
-// Upload audio to Roblox
-try {
-
-    const form = new FormData();
-
-    form.append("file", buffer, {
-        filename: filename,
-        contentType: "audio/mpeg"
-    });
-
-    const robloxUpload = await fetch(
-        "https://apis.roblox.com/assets/v1/assets",
-        {
-            method: "POST",
-            headers: {
-                "x-api-key": process.env.ROBLOX_API_KEY,
-                ...form.getHeaders()
-            },
-            body: form
-        }
-    );
-
-    const robloxData = await robloxUpload.json();
-
-    console.log("Roblox upload:", robloxData);
-
-    if (robloxData.assetId) {
-        ai.audio = `rbxassetid://${robloxData.assetId}`;
+form.append(
+  "request",
+  JSON.stringify({
+    assetType: "Audio",
+    displayName: `John Voice ${Date.now()}`,
+    description: "AI generated voice",
+    creationContext: {
+      creator: {
+        userId: "11161650752"
+      }
     }
+  })
+);
 
-} catch (err) {
+form.append("fileContent", buffer, {
+  filename: filename,
+  contentType: "audio/mpeg"
+});
 
-    console.log("Roblox upload error:", err);
+const robloxUpload = await fetch(
+  "https://apis.roblox.com/assets/v1/assets",
+  {
+    method: "POST",
+    headers: {
+      "x-api-key": process.env.ROBLOX_API_KEY,
+      ...form.getHeaders()
+    },
+    body: form
+  }
+);
 
-}
+const robloxData = await robloxUpload.json();
+
+console.log("Roblox upload:", robloxData);
      
 
         ai.audio = `https://johnai-dc8g.onrender.com/audio/${filename}`;
