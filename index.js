@@ -2,6 +2,7 @@ const express = require("express");
 const OpenAI = require("openai");
 const fs = require("fs");
 const path = require("path");
+const FormData = require("form-data");
 
 const app = express();
 
@@ -399,6 +400,43 @@ fs.writeFileSync(filePath, buffer);
 
 console.log("Saved to:", filePath);
 console.log("Exists:", fs.existsSync(filePath));
+
+
+// Upload audio to Roblox
+try {
+
+    const form = new FormData();
+
+    form.append("file", buffer, {
+        filename: filename,
+        contentType: "audio/mpeg"
+    });
+
+    const robloxUpload = await fetch(
+        "https://apis.roblox.com/assets/v1/assets",
+        {
+            method: "POST",
+            headers: {
+                "x-api-key": process.env.ROBLOX_API_KEY,
+                ...form.getHeaders()
+            },
+            body: form
+        }
+    );
+
+    const robloxData = await robloxUpload.json();
+
+    console.log("Roblox upload:", robloxData);
+
+    if (robloxData.assetId) {
+        ai.audio = `rbxassetid://${robloxData.assetId}`;
+    }
+
+} catch (err) {
+
+    console.log("Roblox upload error:", err);
+
+}
      
 
         ai.audio = `https://johnai-dc8g.onrender.com/audio/${filename}`;
