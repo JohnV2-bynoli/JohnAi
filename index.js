@@ -393,6 +393,14 @@ if (!voice.ok) {
             buffer
         );
 
+     const filePath = path.join(__dirname, "audio", filename);
+
+fs.writeFileSync(filePath, buffer);
+
+console.log("Saved to:", filePath);
+console.log("Exists:", fs.existsSync(filePath));
+     
+
         ai.audio = `https://johnai-dc8g.onrender.com/audio/${filename}`;
 
         console.log("Voice saved:", filename);
