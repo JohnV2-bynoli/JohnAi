@@ -422,16 +422,20 @@ form.append("fileContent", buffer, {
   contentType: "audio/mpeg"
 });
 
+const headers = form.getHeaders({
+    "x-api-key": process.env.ROBLOX_API_KEY
+});
+
+console.log(headers);
+
 const robloxUpload = await fetch(
-  "https://apis.roblox.com/assets/v1/assets",
-  {
-    method: "POST",
-    headers: {
-      "x-api-key": process.env.ROBLOX_API_KEY,
-      ...form.getHeaders()
-    },
-    body: form
-  }
+    "https://apis.roblox.com/assets/v1/assets",
+    {
+        method: "POST",
+        headers,
+        duplex: "half",
+        body: form
+    }
 );
 
 const robloxData = await robloxUpload.json();
