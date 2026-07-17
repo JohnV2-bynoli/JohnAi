@@ -393,7 +393,7 @@ if (!voice.ok) {
             buffer
         );
 
-        ai.audio = `/audio/${filename}`;
+        ai.audio = `https://johnai-dc8g.onrender.com/audio/${filename}`;
 
         console.log("Voice saved:", filename);
 
