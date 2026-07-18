@@ -259,6 +259,30 @@ or
 }
 `;
 
+
+async function waitForOperation(operationId) {
+
+    while (true) {
+
+        const response = await axios.get(
+            `https://apis.roblox.com/assets/v1/operations/${operationId}`,
+            {
+                headers: {
+                    "x-api-key": process.env.ROBLOX_API_KEY
+                }
+            }
+        );
+
+        if (response.data.done) {
+            return response.data;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+
+}
+
+
 app.post("/chat", async (req, res) => {
 
     try {
@@ -446,6 +470,17 @@ try {
 
     console.log("Roblox upload:", robloxUpload.data);
 
+ const operation = await waitForOperation(
+    robloxUpload.data.operationId
+);
+
+console.log("Operation:", operation);
+
+if (operation.response && operation.response.assetId) {
+    ai.audio = operation.response.assetId.toString();
+}
+ 
+
 } catch (err) {
 
     console.log(
@@ -455,7 +490,7 @@ try {
 
 }
 
-        ai.audio = `https://johnai-dc8g.onrender.com/audio/${filename}`;
+   
 
         console.log("Voice saved:", filename);
 
