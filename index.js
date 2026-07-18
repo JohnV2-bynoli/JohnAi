@@ -360,7 +360,7 @@ Never claim the player said something unless it appears in memory or this conver
 
         const completion = await client.chat.completions.create({
 
-           model: "llama-3.3-70b-versatile",
+           model="llama-3.1-8b-instant",
 
             temperature: 1.2,
 
@@ -579,7 +579,7 @@ app.post("/action", async (req, res) => {
 
         const completion = await client.chat.completions.create({
 
-            model: "llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
 
             temperature: 0.7,
 
