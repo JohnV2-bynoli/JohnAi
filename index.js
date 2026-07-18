@@ -3,6 +3,7 @@ const OpenAI = require("openai");
 const fs = require("fs");
 const path = require("path");
 const FormData = require("form-data");
+const axios = require("axios");
 
 const app = express();
 
@@ -428,20 +429,31 @@ const headers = form.getHeaders({
 
 console.log(headers);
 
-const robloxUpload = await fetch(
-    "https://apis.roblox.com/assets/v1/assets",
-    {
-        method: "POST",
-        headers,
-        duplex: "half",
-        body: form
-    }
-);
+try {
 
-const robloxData = await robloxUpload.json();
+    const robloxUpload = await axios.post(
+        "https://apis.roblox.com/assets/v1/assets",
+        form,
+        {
+            headers: {
+                ...form.getHeaders(),
+                "x-api-key": process.env.ROBLOX_API_KEY
+            },
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity
+        }
+    );
 
-console.log("Roblox upload:", robloxData);
-     
+    console.log("Roblox upload:", robloxUpload.data);
+
+} catch (err) {
+
+    console.log(
+        "Roblox upload error:",
+        err.response?.data || err.message
+    );
+
+}
 
         ai.audio = `https://johnai-dc8g.onrender.com/audio/${filename}`;
 
