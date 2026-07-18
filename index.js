@@ -382,6 +382,7 @@ try {
 }
 
 let reply = ai.reply || "...";
+let voiceReply = reply.replaceAll(player, "player");
 
      try {
 
@@ -396,7 +397,7 @@ let reply = ai.reply || "...";
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                text: reply,
+                text: voiceReply,
                 model_id: "eleven_multilingual_v2"
             })
         }
